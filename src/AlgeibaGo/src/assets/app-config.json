@@ -1,0 +1,8 @@
+{
+    "version": "v2.0",
+    "baseUrl": "http://localhost:44390/api",
+    "apiIPUrl": "https://jsonip.com",
+    "apiCountryUrl": "https://api.ipgeolocation.io/ipgeo?",
+    "backOffice": "https://go-backoffice.dev.algeiba.com",
+    "apiCountryKey": "4c23bf6dd4444ace8c10f957f898ec5c"
+}

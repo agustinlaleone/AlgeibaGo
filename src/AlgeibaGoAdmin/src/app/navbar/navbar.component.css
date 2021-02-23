@@ -1,0 +1,75 @@
+.example-fill-remaining-space {
+    /* This fills the remaining space, by using flexbox. 
+       Every toolbar row uses a flexbox row layout. */
+    flex: 1 1 auto;
+}
+
+
+/* @media only screen and (max-width: 991px) and (min-width: 769px) {
+    /* CSS that should be displayed if width is equal to or less than 991px and larger 
+     than 768px goes here 
+     #logo {
+        width: ;
+     }
+} */
+
+@media only screen and (min-width: 992px) {
+    /* CSS that should be displayed if width is equal to or less than 991px goes here */
+    #logo {
+        width: 18%;
+    }
+}
+
+@media only screen and (max-width: 991px) and (min-width: 601px) {
+    /* CSS that should be displayed if width is equal to or less than 991px goes here */
+    #logo {
+        width: 18%;
+    }
+}
+
+@media only screen and (max-width: 600px) and (min-width: 501px) {
+    /* CSS that should be displayed if width is equal to or less than 991px goes here */
+    #logo {
+        width: 25%;
+    }
+}
+
+@media only screen and (max-width: 500px) and (min-width: 401px) {
+    /* CSS that should be displayed if width is equal to or less than 991px goes here */
+    #logo {
+        width: 30%;
+    }
+}
+
+@media only screen and (max-width: 400px) and (min-width: 100px) {
+    /* CSS that should be displayed if width is equal to or less than 991px goes here */
+    #logo {
+        width: 25%;
+    }
+}
+
+.toolbar {
+    border-bottom: 1px solid lightgray;
+    background-color: white
+}
+
+@media(max-width: 600px) {
+    #btnSingOut {
+        width: 80px;
+        height: 30px;
+    }
+}
+
+.align-right {
+    position: absolute;
+    right: 1%;
+    margin-right: 10px;
+}
+
+span {
+    font-size: 12px;
+}
+
+a {
+    font-size: 12px;
+}

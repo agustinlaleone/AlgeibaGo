@@ -1,0 +1,11 @@
+{
+    "version": "v2.0",
+    "apiBaseURL": "http://localhost:57222/api",
+    "issuer": "http://localhost:5000",
+    "redirectUri": "http://localhost:4200/callback",
+    "pageURL": "http://localhost:4200",
+    "clientId": "alGoAngular",
+    "responseType": "",
+    "postLogoutRedirectUri": "http://localhost:4200/",
+    "scope": "openid profile email AlgeibaGoManagerDBApi"
+}

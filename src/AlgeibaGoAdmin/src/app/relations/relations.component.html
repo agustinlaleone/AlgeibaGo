@@ -1,0 +1,128 @@
+<app-navbar></app-navbar>
+
+<div class="card-container">
+  <div class="card">
+    <div class="card-title">
+      <div style="margin-top: 5px; margin-left: 6px">
+        <h2 style="display: inline-block">Relaciones</h2>
+
+        <div class="input-group">
+          <input #inputFilter class="form-control" placeholder='Filtrar' type="text">
+          <span class="input-group-btn"><button class="btn btn-primary" type="button">
+              <i class="fa fa-search"></i></button></span>
+        </div>
+
+        <div class="row col-lg-12 col-sm-12 col-md-12">
+          <div class="col-lg-6 col-sm-6 col-md-6">
+            <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
+              <button class="btn btn-secondary" type="button" ngbDropdownToggle> Relaciones </button>
+              <div class="dropdown-menu" ngbDropdownMenu>
+                <button (click)="redirectRoutes(1)" ngbDropdownItem> Rutas </button>
+                <button (click)="redirectRoutes(2)" ngbDropdownItem> Usuarios </button>
+              </div>
+            </div>
+            <div class="btn-group" *ngIf="multipleRole" ngbDropdown role="group" aria-label="Button group with nested dropdown">
+              <button class="btn btn-secondary" type="button" ngbDropdownToggle> {{role}} </button>
+              <div class="dropdown-menu" ngbDropdownMenu>
+                <button *ngFor="let item of roles" (click)="selected(item)" ngbDropdownItem> {{item}} </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-6 col-md-6">
+            <div class="btn-group float-right">
+              <button (click)="loadRoutesPage(1)" type="button" class="btn btn-primary" aria-label="Left Align">
+                <span class="fa fa-book" aria-hidden="true"></span> Todas
+              </button>
+              <button (click)="loadRoutesPage(2)" type="button" class="btn btn-primary" aria-label="Left Align">
+                <span class="fa fa-book fa-fw" aria-hidden="true"></span> Propias
+              </button>
+              <button (click)="loadRoutesPage(3)" type="button" class="btn btn-primary" aria-label="Left Align">
+                <span class="fa fa-book fa-fw" aria-hidden="true"></span> Otras
+              </button> 
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="card-body">
+
+      <div>
+        <mat-table #table class.isMobile="isMobile" [dataSource]="dataSource">
+          <ng-container matColumnDef="Route">
+            <mat-header-cell *matHeaderCellDef> Ruta </mat-header-cell>
+            <mat-cell *matCellDef="let row"><span class="mobile-label">Ruta: </span> {{row.Route}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="RedirectUrl">
+            <mat-header-cell *matHeaderCellDef> Redirect URL </mat-header-cell>
+            <mat-cell *matCellDef="let row"><span class="mobile-label">Redirect URL: </span> <a href="{{ row.RedirectUrl }}"> {{row.RedirectUrl}}</a> </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="Users">
+            <mat-header-cell *matHeaderCellDef> Usuarios </mat-header-cell>
+           <mat-cell *matCellDef="let row"><span class="mobile-label">Usuarios: </span><li *ngFor="let Users of row.Users">{{Users.userName}}</li></mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="actionsColumn">
+            <mat-header-cell *matHeaderCellDef> Acciones </mat-header-cell>
+            <mat-cell *matCellDef="let row"><span class="mobile-label">Acciones: </span>
+              <button (click)="editRelation(row, modalRelation)" class="btn btn-default btn-xs btn-space"  tooltip="Editar"
+                title="Editar" style="cursor: pointer" [disabled] = "!row.Exists"><i class="fas fa-edit"></i>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"> </mat-row>
+        </mat-table>
+        <mat-paginator [length]="totalSize" [pageSize]="paginator.pageSize" [pageSizeOptions]="sizeOptions" (page)="loadRoutesPage(method)"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalRelation let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Relaciones</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form">
+      <div class="form-group">
+        <label for="route">Ruta: {{objRoute.Route}}</label>
+      </div>
+      <div class="form-group">
+        <label for="redirectUrl">RedirectURL: {{objRoute.RedirectUrl}}</label>
+      </div>
+      <div class="dual-list">
+
+
+        <dual-list [source]="listUsers" key="id" [(destination)]="listUsersSelected" display="userName"></dual-list>
+
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success btn-space" (click)="saveRelation()">Guardar</button>
+    <button type="button" class="btn btn-secondary btn-space" (click)="closeModal()">Cancelar</button>
+  </div>
+</ng-template>
+
+
+
+<ng-template #modalConfirm let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title"><span>{{modalTitle}}</span></h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <span>{{modalBody}}</span>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success btn-space" (click)="modal.close('OK')">Si</button>
+    <button type="button" class="btn btn-secondary btn-space" (click)="modal.close('CANCEL')">No</button>
+  </div>
+</ng-template>
+<app-footer></app-footer>

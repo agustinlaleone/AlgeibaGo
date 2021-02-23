@@ -1,0 +1,131 @@
+﻿@model LoginViewModel
+<head>
+    <link href="~/css/login.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div>
+        <div class="row">
+            <partial name="_ValidationSummary" />
+
+            @if (Model.EnableLocalLogin)
+            {
+                <div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="container logout-images" align="center">
+                                <img class="block-center rounded" width="270" src="~/LogoAlgeibaGO.png" alt="Image" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="col-md-auto col-lg-6 col-sm-12 col-md-12 col-xs-12">
+
+                            <center>
+                                <h2>¿Con qué usuario desea ingresar?</h2>
+                            </center>
+                            <div class="col-lg-12">
+                                <div class="col-lg-3"></div>
+                                <form method="get">
+                                    <div class="col-lg-6">
+                                        <button type="button"
+                                                class="btn btn-primary btn-lg btn-block"
+                                                style="background-color: #E6472A ;height:60px;margin-top:30px;
+                                        position:center;
+                                        border: none;
+                                        border-radius:12px; min-width:140px"
+                                                onclick="toggleLogin()">
+                                            ALGEIBA GO
+                                        </button>
+                                        @if (Model.VisibleExternalProviders.Any())
+                                        {
+                                            @foreach (var provider in Model.VisibleExternalProviders)
+                                            {
+                                                <h2>
+                                                    <a type="button" class="btn btn-primary btn-lg btn-block" style="background-color: #E6472A; border-color:#E6472A; height:60px; padding-top:17px; margin-top:20px; min-width:140px;
+                                                   border-radius:12px"
+                                                       asp-controller="External"
+                                                       asp-action="Challenge"
+                                                       asp-route-provider="@provider.AuthenticationScheme"
+                                                       asp-route-returnUrl="@Model.ReturnUrl">
+                                                        @provider.DisplayName
+                                                    </a>
+                                                </h2>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="col-lg-3"></div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div id="contenedor" class="col-12">
+                            @if (Model.LoginFailure.HasValue == true)
+                            {
+                                <h6 class="text-danger text-center">@Model.Error</h6>
+
+                            }
+                            <div class="panel-body" id="loginGO" style=" visibility:hidden;  margin-top:40px ; display:none;">
+                                <form novalidate="novalidate" method="post">
+                                    <fieldset>
+                                        <div class="form-group">
+                                            <label asp-for="Usuario"></label>
+                                            <input class="form-control" placeholder="Usuario" style="" asp-for="Usuario" autofocus>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Contraseña"></label>
+                                            <input type="password" class="form-control" style="" placeholder="Contraseña" asp-for="Contraseña" autocomplete="off">
+                                        </div>
+                                        @if (Model.AllowRememberLogin)
+                                        {
+                                            <div class="form-group login-remember">
+                                                <label asp-for="RememberLogin">
+                                                    <input asp-for="RememberLogin">
+                                                    <strong>Recordar</strong>
+                                                </label>
+                                            </div>
+                                        }
+
+                                        <div class="form-group">
+                                            <button class="btn btn-primary" style="background-color: #E6472A ; border-color:#E6472A" name="button" value="login">Ingresar</button>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (!Model.EnableLocalLogin && !Model.VisibleExternalProviders.Any())
+            {
+                <div class="alert alert-warning">
+                    <strong>Invalid login request</strong>
+                    There are no login schemes configured for this client.
+                </div>
+            }
+        </div>
+    </div>
+
+    <center>
+        <div style="position: fixed; bottom: 0; right:0 ">
+            <img class="block-center rounded" al width="100" src="~/LogoAlgeibaGO.png" alt="Image" />
+        </div>
+    </center>
+
+    <script type="text/javascript">
+        var loginVisible = false;
+        function toggleLogin() {
+            if (loginVisible) {
+                document.getElementById("loginGO").style.visibility = "hidden";
+                document.getElementById("loginGO").style.display = "none";
+                loginVisible = false;
+            }
+            else {
+                document.getElementById("loginGO").style.visibility = "visible";
+                document.getElementById("loginGO").style.display = "inline";
+                loginVisible = true;
+            }
+
+        }
+    </script>
+</body>

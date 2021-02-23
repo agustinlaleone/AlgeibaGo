@@ -1,0 +1,177 @@
+<app-navbar></app-navbar>
+
+<div class="col-lg-12 main-box">
+    <div class="card no-borders">
+        <div class="row no-margins super-container">
+            <div id="btns2" class="col-sm-12 col-lg-3 col-md-3 buttons rightaligned" style="display: block;">
+                <button class="btn btn-success" id="btnAdmin" value="bold" type="button" style="background-color: #ee2737 
+              ;border-color: #ee2737; margin-right: 1%" (click)="redirectRoutes(2)"> Admin </button>
+                <button (click)="newRoute(modalRoute, currentSelectedPage)" id="btnNew" class="btn btn-info " type="button" style=" background-color: #ee2737 ; border-color: #ee2737; margin-right: 5px;">Nuevo</button>
+            </div>
+
+            <nav id="menuOpciones" ngbNav #nav="ngbNav" class="col-sm-12 col-lg-9 col-md-9 nav-tabs row leftaligned">
+                <ng-container ngbNavItem class="col-4">
+                    <a ngbNavLink (click)="selectedMyLinks(2)">Mis Links</a>
+                    <ng-template ngbNavContent>
+                    </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem class="col-4">
+                    <a ngbNavLink (click)="selectedMyLinks(3)">Otros Links</a>
+                    <ng-template ngbNavContent>
+                    </ng-template>
+                </ng-container>
+                <ng-container ngbNavItem class="col-4">
+                    <a ngbNavLink (click)="selectedMyLinks(4)">Favoritos</a>
+                    <ng-template ngbNavContent>
+                    </ng-template>
+                </ng-container>
+            </nav>
+        </div>
+
+        <div class="row box-container">
+            <div class="col-lg-4 col-sm-12 col-12 col-md-12 card-body result-box">
+                <div class="card" id="sample" style="margin-top:-10px; width: 100%; box-shadow: none; border: 0">
+                    <div id="sample">
+                        <input id="box" type="text" class="e-input" placeholder="Buscar" #startWith (keydown)="p = 1">
+                        <ejs-listview *ngIf="habMyLinks" #list id='list' [height]="600" [dataSource]='data | filter: startWith.value | paginate: {itemsPerPage: 10, currentPage: p}' id='sample-list' cssClass='e-list-template' [sortOrder]='Ascending'>
+                            <ng-template #template let-data="">
+                                <div (click)="selectOption(data)" class="e-list-wrapper e-list-multi-line" style="cursor: pointer;">
+                                    <span class="e-list-item-header">
+                                      {{(data.PageTitle == '' || data.PageTitle == null || data.PageTitle == undefined  ) ? data.RedirectUrl : data.PageTitle}} 
+                                    </span>
+                                    <label class="e-list-content" style="display: inline; color: #ee2737">
+                                      {{urlLocation.toLowerCase()}}<b>{{data.Route}}</b>
+                                    </label>
+                                    <div class="stats">
+                                        <label >{{data.VisitCount}}</label>
+                                        <i class="material-icons">assessment</i>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ejs-listview>
+                        <pagination-controls *ngIf="data != null && data.length > 10" (pageChange)="changePage($event);" style="background-color:#ee2737;" previousLabel=" " nextLabel=" "></pagination-controls>
+                    </div>
+                </div>
+            </div>
+            <div id="right-panel" class="col-lg-8 col-sm-12 col-md-12 card-body">
+                <div class="row" *ngIf="activeButtons" style="width: 100%;">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="col-12">
+                            <h2 id="linkText">{{(selectedRoute.PageTitle == '' || selectedRoute.PageTitle == null || selectedRoute.PageTitle == undefined ) ? selectedRoute.RedirectUrl : selectedRoute.PageTitle}}</h2>
+                        </div>
+                        <div class="col-12">
+                            <h6><a href="{{selectedRoute.RedirectUrl}}" target="_blank" style="text-decoration: none;">{{selectedRoute.RedirectUrl}}</a></h6>
+                        </div>
+                        <br>
+                        <div class="col-12 row">
+                            <label class="e-list-content" style="display: inline; color: #ee2737">
+                                {{urlLocation.toLowerCase()}}<b>{{selectedRoute.Route}}</b>
+                            </label>
+                            <div class="col-12 col-sm-8">
+                                <button type="button" class="btn btn-success btn-sm botonesAcciones" style="margin-left: 10px; background-color: #ee2737 ;border-color: #ee2737" *ngIf="activeButtons" ngxClipboard [cbContent]="urlLocation + selectedRoute.Route" #p="ngbPopover" ngbPopover="Copiado al portapapeles"
+                                    placement="right" [closeDelay]="800" [autoClose]="true" (click)="p.open()">
+                                    <i id="iconCopy" class="material-icons">insert_link</i>
+                                </button>
+
+                                <button type="button" class="btn btn-success btn-sm botonesAcciones" id="edit" style="margin-left: 10px; background-color: #ee2737 ;border-color: #ee2737" *ngIf="activeButtons && (isAdmin || containsUser(selectedRoute))" (click)="editRoute(selectedRoute, modalRoute)">
+                                    <i id="iconEdit" class="material-icons">edit</i>
+                                </button>
+
+                                <button type="button" class="btn btn-success btn-sm botonesAcciones" id="delete" style="margin-left: 10px; background-color: #ee2737 ;border-color: #ee2737" *ngIf="activeButtons && (isAdmin || containsUser(selectedRoute))" (click)="deleteRoute(selectedRoute, modalConfirm, currentSelectedPage)">
+                                    <i id="iconDelete" class="material-icons">delete</i>
+                                </button>
+
+                                <button type="button" class="btn btn-success btn-sm botonesAcciones" id="delete" style="margin-left: 10px; background-color: #ee2737 ;border-color: #ee2737" *ngIf="activeButtons" (click)="updateFavorite(selectedRoute)">
+                                    <i id="starIcon" class="material-icons" 
+                                    style="border-radius: 50%;" [title]="selectedRoute.isFavorite ? 'Quitar de Favoritos' : 'Agregar a Favoritos'" [style.color]="selectedRoute.isFavorite ? 'yellow' : 'white'">{{ selectedRoute.isFavorite ? 'star' : 'star_border' }}</i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div *ngIf="activeButtons" class="col-lg-6" id="paises">
+                        <div>
+                            <div>
+                                <h6>Países</h6>
+                            </div>
+                            <div class="chart">
+                                <canvas baseChart [data]="pieChartDataCountry" [labels]="pieChartLabelsCountry" [chartType]="pieChartType" [options]="pieChartOptions" [colors]="pieChartColors" [plugins]="pieChartPlugins" [legend]="pieChartLegend">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="viewVisited && countVisit > 0" class="col-lg-6" id="visitas">
+                        <div>
+                            <div>
+                                <h6 *ngIf="activeButtons">Visitas</h6>
+                            </div>
+                            <div *ngIf="activeButtons" class="chart">
+                                <canvas baseChart [data]="pieChartDataClick" [labels]="pieChartLabelsClick" [chartType]="pieChartType" [options]="pieChartOptions" [plugins]="pieChartPlugins" [legend]="pieChartLegend">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div clas="row card-body">
+                    <div id="noChartContainer" style="display: none;">
+                        <h5>No hay datos con los cuales se pueda realizar la estadística.</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #modalRoute let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Ruta</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="form">
+            <div class="form-group">
+                <label for="route">Ruta</label>
+                <input type="text" formControlName="route" class="form-control" maxlength="30" [ngClass]="{ 'is-invalid': submitted && formControls.route.errors }" />
+                <div *ngIf="submitted && formControls.route.errors" class="invalid-feedback">
+                    <div *ngIf="formControls.route.errors.required">La ruta es requerida</div>
+                </div>
+            </div>
+            <div *ngIf="editedRute" class="form-group">
+                <label for="title">Título</label>
+                <input type="text" formControlName="title" class="form-control" maxlength="250"  />
+            </div>
+            <div class="form-group">
+                <label for="redirectUrl">RedirectURL</label>
+                <input type="text" formControlName="redirectUrl" [readonly]="editedRute" class="form-control" [ngClass]="{ 'is-invalid': submitted && formControls.redirectUrl.errors }" />
+                <div *ngIf="submitted && formControls.redirectUrl.errors" class="invalid-feedback">
+                    <div *ngIf="formControls.redirectUrl.errors.required">La RedirectURL es requerida</div>
+                    <div *ngIf="formControls.redirectUrl.errors.invalidUrl">Formáto inválido</div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-success btn-space" style="background-color: #ee2737 ;border-color: #ee2737" (click)="saveRoute();">Guardar</button>
+        <button type="button" class="btn btn-secondary btn-space" (click)="closeModal()">Cancelar</button>
+    </div>
+</ng-template>
+
+<ng-template #modalConfirm let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title"><span>{{modalTitle}}</span></h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+        <span>{{modalBody}}</span>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-success btn-space" style="background-color: #ee2737 ;border-color: #ee2737" (click)="modal.close('OK')">Si</button>
+        <button type="button" class="btn btn-secondary btn-space" (click)="modal.close('CANCEL')">No</button>
+    </div>
+</ng-template>
+<app-footer></app-footer>
